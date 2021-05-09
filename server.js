@@ -30,6 +30,11 @@ app.use(express.text());
 // app.use(bodyParser.text());
 app.use("/api", apiRoute);
 
+app.get('/', (req, res, next) => {
+    res.send("<h1>This is my new node app</h1>")
+});
+
+
 let opts = {
     useNewUrlParser: true,
     keepAlive: 30000,
