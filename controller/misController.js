@@ -16,7 +16,6 @@ misController.todaysLog = async (req, res) => {
             },
         }
         let logged = await queryCtrl.findByQuery(timeLog, obj);
-        console.log('[debug] > file: misController.js > line 19 > misController.todaysLog= > logged', logged)
         logged = JSON.parse(JSON.stringify(logged))
         let maskCreated = await queryCtrl.countDocuments(itemLog, obj)
 
@@ -33,7 +32,7 @@ misController.todaysLog = async (req, res) => {
         }
 
 
-        console.log('[debug] > file: misController.js > line 43 > misController.todaysLog= > time', time)
+
         var seconds = (new Date(time.logout).getTime() - new Date(time.login).getTime()) / 1000;
 
         var hours = Math.floor(seconds / 3600);
