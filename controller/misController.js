@@ -16,24 +16,24 @@ misController.todaysLog = async (req, res) => {
             },
         }
         let logged = await queryCtrl.findByQuery(timeLog, obj);
+        console.log('[debug] > file: misController.js > line 19 > misController.todaysLog= > logged', logged)
         logged = JSON.parse(JSON.stringify(logged))
         let maskCreated = await queryCtrl.countDocuments(itemLog, obj)
 
         let time = {}
 
         for (const item of logged) {
-            if ((item.status === 'login' && time['login'] && new Date(item.createdAt) < new Date(time.login)) || !time['login']) {
-                console.log('login')
+            if ((item.status === 'login' && new Date(item.createdAt) < new Date(time.login))) {
                 time[item.status] = new Date(item.createdAt)
-            }
+            } else if (item.status === 'login' && !time['login']) time[item.status] = new Date(item.createdAt)
 
-            if ((item.status === 'logout' && time['logout'] && new Date(item.createdAt) > new Date(time.logout)) || !time['logout']) {
-                console.log('logout')
+            if ((item.status === 'logout' && new Date(item.createdAt) > new Date(time.logout))) {
                 time[item.status] = new Date(item.createdAt)
-            }
+            } else if (item.status === 'logout' && !time['logout']) time[item.status] = new Date(item.createdAt)
         }
 
 
+        console.log('[debug] > file: misController.js > line 43 > misController.todaysLog= > time', time)
         var seconds = (new Date(time.logout).getTime() - new Date(time.login).getTime()) / 1000;
 
         var hours = Math.floor(seconds / 3600);
