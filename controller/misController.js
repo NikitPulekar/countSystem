@@ -11,13 +11,10 @@ misController.todaysLog = async (req, res) => {
 
         let obj = {
             createdAt: {
-                $gte: new Date(new Date().setHours(0, 0, 0, 0) + 19800),
-                $lte: new Date(new Date().setHours(23, 59, 59, 59) + 19800)
+                $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                $lte: new Date(new Date().setHours(23, 59, 59, 59))
             },
         }
-        console.log('[debug] > file: misController.js > line 16 > misController.todaysLog= > new Date().setHours(23, 59, 59, 59)', new Date().setHours(23, 59, 59, 59))
-        console.log('[debug] > file: misController.js > line 15 > misController.todaysLog= > new Date().setHours(0, 0, 0, 0)', new Date().setHours(0, 0, 0, 0))
-        console.log('[debug] > file: misController.js > line 18 > misController.todaysLog= > obj', obj)
         let logged = await queryCtrl.findByQuery(timeLog, obj);
         logged = JSON.parse(JSON.stringify(logged))
         let maskCreated = await queryCtrl.countDocuments(itemLog, obj)
