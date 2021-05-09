@@ -52,7 +52,7 @@ mongoose.connect(process.env.db_url, opts).then(() => {
 
 let port = process.env.PORT || 3000;
 app.listen(port, () => {
-    console.log(`connected to PORT ${process.env.port}`)
+    console.log(`connected to PORT ${process.env.PORT}`)
 })
 
 app.on('error', (error) => {
