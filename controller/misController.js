@@ -14,6 +14,7 @@ misController.todaysLog = async (req, res) => {
                 $gte: new Date(new Date().setHours(0, 0, 0, 0)),
                 $lte: new Date(new Date().setHours(23, 59, 59, 59))
             },
+            username: reqBody.username
         }
         let logged = await queryCtrl.findByQuery(timeLog, obj);
         logged = JSON.parse(JSON.stringify(logged))
@@ -31,20 +32,37 @@ misController.todaysLog = async (req, res) => {
             } else if (item.status === 'logout' && !time['logout']) time[item.status] = new Date(item.createdAt)
         }
 
+        let date = new Date(), y = date.getFullYear(), m = date.getMonth()
+        let firstDay = new Date(y, m, 1);
+        let lastDay = new Date(y, m + 1, 1);
+
+        let qryObj = {
+            createdAt: {
+                $gte: firstDay,
+                $lte: lastDay
+            },
+            username: reqBody.username
+        }
+
+        let createdInMonth = await queryCtrl.countDocuments(itemLog, qryObj)
+        console.log('[debug] > file: misController.js > line 46 > misController.todaysLog= > createdInMonth', createdInMonth)
 
 
-        var seconds = (new Date(time.logout).getTime() - new Date(time.login).getTime()) / 1000;
 
-        var hours = Math.floor(seconds / 3600);
-        var minutes = Math.floor(seconds % 3600 / 60);
+        let seconds = (new Date(time.logout).getTime() - new Date(time.login).getTime()) / 1000;
+
+        let hours = Math.floor(seconds / 3600);
+        let minutes = Math.floor(seconds % 3600 / 60);
 
         return res.status(200).type('application/json').send({
             "statusCode": 200,
             "statusMsg": `success`,
             data: {
+                loginTime: time.login,
                 hour: hours,
                 minutes: minutes,
-                maskCreated: maskCreated
+                maskCreated: maskCreated,
+                createdInMonth
             }
         });
 
