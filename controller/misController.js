@@ -16,6 +16,7 @@ misController.todaysLog = async (req, res) => {
             },
             username: reqBody.username
         }
+        obj['itemName'] = reqBody.product
         let logged = await queryCtrl.findByQuery(timeLog, obj);
         logged = JSON.parse(JSON.stringify(logged))
         let maskCreated = await queryCtrl.countDocuments(itemLog, obj)
@@ -41,7 +42,8 @@ misController.todaysLog = async (req, res) => {
                 $gte: firstDay,
                 $lte: lastDay
             },
-            username: reqBody.username
+            username: reqBody.username,
+            itemName: reqBody.product
         }
 
         let createdInMonth = await queryCtrl.countDocuments(itemLog, qryObj)
@@ -97,6 +99,42 @@ misController.maskWithinTime = async (req, res) => {
             "statusMsg": `total time spent is ${hours}hr ${minutes.toFixed(0)}min maskCreated:${maskCreated}`,
             data: {
                 maskCreated: maskCreated
+            }
+        });
+
+
+    } catch (error) {
+        console.log('[debug] > file: misController.js > line 11 > userController.signIn= > error', error)
+        return res.status(200).type('application/json').send({
+            "statusCode": 425,
+            "statusMsg": 'someting went wrong'
+        });
+    }
+}
+
+misController.mis = async (req, res) => {
+    try {
+        let reqBody = JSON.parse(JSON.stringify(req.body));
+        let obj = { username: reqBody.username }
+
+        if (reqBody.fromDate) obj['createdAt']['$gte'] = new Date(new Date(reqBody.fromDate))
+
+
+        if (reqBody.toDate) obj['createdAt']['$lte'] = new Date(new Date(reqBody.toDate))
+        if (reqBody.itemName) obj['itemName'] = reqBody.itemName
+
+        console.log('[debug] > file: misController.js > line 123 > misController.mis= > reqBody', reqBody)
+
+
+        let itemsCreated = await queryCtrl.aggregateQuery(itemLog, [{
+            $match: obj
+        }])
+
+        return res.status(200).type('application/json').send({
+            "statusCode": 200,
+            // "statusMsg": `total time spent is ${hours}hr ${minutes.toFixed(0)}min maskCreated:${itemsCreated}`,
+            data: {
+                items: itemsCreated
             }
         });
 

@@ -7,7 +7,10 @@ const apiService = require('../services/apiKeyVerification'); //middleware to ve
 
 router.post('/log',apiService.verifyApiKey, taskController.logTime);
 router.post('/createProduct',apiService.verifyApiKey, taskController.createProduct);
+router.post('/get-user-products',apiService.verifyApiKey, taskController.getUserProducts);
 router.post('/todaysLog',apiService.verifyApiKey, misController.todaysLog);
+router.post('/mis',apiService.verifyApiKey, misController.mis);
+
 
 
 

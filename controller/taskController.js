@@ -18,7 +18,6 @@ taskController.logTime = async (req, res) => {
         }
 
         let logged = await queryCtrl.createOne(timeLog, obj)
-        console.log('[debug] > file: taskController.js > line 19 > taskController.login= > logged', logged)
         return res.status(200).type('application/json').send({
             "statusCode": 200,
             "statusMsg": 'time logged successfully'
@@ -48,6 +47,32 @@ taskController.createProduct = async (req, res) => {
         return res.status(200).type('application/json').send({
             "statusCode": 200,
             "statusMsg": 'product logged'
+        });
+
+
+    } catch (error) {
+        console.log('[debug] > file: taskController.js > line 11 > userController.signIn= > error', error)
+        return res.status(200).type('application/json').send({
+            "statusCode": 425,
+            "statusMsg": 'someting went wrong'
+        });
+    }
+}
+
+taskController.getUserProducts = async (req, res) => {
+    try {
+        let reqBody = JSON.parse(JSON.stringify(req.body));
+        let obj = {
+            username: reqBody.username
+        }
+
+        let items = await queryCtrl.getDistinctValues(itemLog, obj, "itemName");
+        console.log('[debug] > file: taskController.js > line 71 > taskController.getUserProducts= > items', items)
+
+        return res.status(200).type('application/json').send({
+            "statusCode": 200,
+            "statusMsg": 'success',
+            data: items
         });
 
 
