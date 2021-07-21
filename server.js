@@ -28,7 +28,7 @@ app.use(express.text());
 // }));
 // app.use(bodyParser.raw());
 // app.use(bodyParser.text());
-app.use("/api", apiRoute);
+app.use("/", apiRoute);
 
 app.get('/', (req, res, next) => {
     res.send("<h1>This is my new node app</h1>")
