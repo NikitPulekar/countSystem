@@ -6,7 +6,7 @@ RUN npm install
 COPY . .
 ENV TZ=Asia/Kolkata
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-ENV PORT=5661
-EXPOSE 5661
+ENV PORT=4000
+EXPOSE 4000
 CMD ["npm", "start"]
 
