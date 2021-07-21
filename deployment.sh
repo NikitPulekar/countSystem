@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 docker login -u neekit -p Nikit@123
 docker pull neekit/countsystem || true
 docker build --cache-from countsystem -t neekit/countsystem .
