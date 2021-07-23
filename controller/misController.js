@@ -47,9 +47,6 @@ misController.todaysLog = async (req, res) => {
         }
 
         let createdInMonth = await queryCtrl.countDocuments(itemLog, qryObj)
-        console.log('[debug] > file: misController.js > line 46 > misController.todaysLog= > createdInMonth', createdInMonth)
-
-
 
         let seconds = (new Date(time.logout).getTime() - new Date(time.login).getTime()) / 1000;
 
@@ -117,25 +114,65 @@ misController.mis = async (req, res) => {
         let reqBody = JSON.parse(JSON.stringify(req.body));
         let obj = { username: reqBody.username }
 
-        if (reqBody.fromDate) obj['createdAt']['$gte'] = new Date(new Date(reqBody.fromDate))
+        let startDate = ((reqBody.from_date) == null || (reqBody.from_date) == "") ? new Date() : (
+            (utility.isValidDate(reqBody.from_date)) ? new Date(reqBody.from_date) : false);
 
+        let endDate = ((reqBody.to_date) == null || (reqBody.to_date) == "") ? new Date() : (
+            (utility.isValidDate(reqBody.to_date)) ? new Date(reqBody.to_date) : false);
+        startDate.setHours(0, 0, 0, 0);
 
-        if (reqBody.toDate) obj['createdAt']['$lte'] = new Date(new Date(reqBody.toDate))
+        endDate.setDate(endDate.getDate() + 1);
+        endDate.setHours(24, 59, 59, 0);
+
+        obj["createdAt"] = {
+            "$gte": new Date(startDate.toISOString()),
+            "$lt": new Date(endDate.toISOString()),
+        }
         if (reqBody.itemName) obj['itemName'] = reqBody.itemName
-
-        console.log('[debug] > file: misController.js > line 123 > misController.mis= > reqBody', reqBody)
-
 
         let itemsCreated = await queryCtrl.aggregateQuery(itemLog, [{
             $match: obj
-        }])
+        }, {
+            $group: {
+                "_id": {
+                    "createdTime": { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    itemName: "$itemName"
+                },
+                count: { $sum: 1 },
+
+            }
+        }, {
+            $project: {
+                _id: 0,
+                itemName: "$_id.itemName",
+                createdTime: "$_id.createdTime",
+                count: 1
+            }
+        }, {
+            $group: {
+                _id: "$createdTime",
+                dataCounts: { '$push': '$$ROOT' },
+                count: { $sum: "$count" },
+            }
+        }, {
+            "$project": {
+                _id: 0,
+                createdTime: "$_id",
+                dataCounts: 1,
+                count: 1
+            }
+        },
+        {
+            $sort: {
+                createdTime: -1
+            }
+        }
+        ])
 
         return res.status(200).type('application/json').send({
             "statusCode": 200,
             // "statusMsg": `total time spent is ${hours}hr ${minutes.toFixed(0)}min maskCreated:${itemsCreated}`,
-            data: {
-                items: itemsCreated
-            }
+            data: itemsCreated
         });
 
 
