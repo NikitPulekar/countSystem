@@ -175,7 +175,6 @@ misController.mis = async (req, res) => {
             data: itemsCreated
         });
 
-
     } catch (error) {
         console.log('[debug] > file: misController.js > line 11 > userController.signIn= > error', error)
         return res.status(200).type('application/json').send({
