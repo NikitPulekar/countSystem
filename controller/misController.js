@@ -3,6 +3,7 @@ const users = require('../models/userModel');
 const timeLog = require('../models/logModel');
 const itemLog = require('../models/itemModel');
 const utilities = require("../services/utilities");
+const { findOne } = require('../services/databaseQueries');
 
 const misController = {}
 
@@ -17,7 +18,8 @@ misController.todaysLog = async (req, res) => {
             },
             username: reqBody.username
         }
-        obj['itemName'] = reqBody.product
+        if (reqBody.product) obj['itemName'] = reqBody.product
+
         let logged = await queryCtrl.findByQuery(timeLog, obj);
         logged = JSON.parse(JSON.stringify(logged))
         let maskCreated = await queryCtrl.countDocuments(itemLog, obj)
@@ -48,6 +50,13 @@ misController.todaysLog = async (req, res) => {
         }
 
         let createdInMonth = await queryCtrl.countDocuments(itemLog, qryObj)
+
+        console.log('[debug] > file: misController.js > line 65 > misController.todaysLog= > obj', obj)
+        let lastItemCreated = await queryCtrl.findOne(itemLog, obj)
+        console.log('[debug] > file: misController.js > line 54 > misController.todaysLog= > lastItemCreated', lastItemCreated)
+        lastItemTime = null
+
+        // if(time && time.logout) 
 
         let seconds = (new Date(time.logout).getTime() - new Date(time.login).getTime()) / 1000;
 
@@ -135,7 +144,7 @@ misController.mis = async (req, res) => {
         let itemsCreated = await queryCtrl.aggregateQuery(itemLog, [{
             $match: obj
         },
-         {
+        {
             $group: {
                 "_id": {
                     "createdTime": { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
@@ -152,7 +161,7 @@ misController.mis = async (req, res) => {
                 count: 1
             }
         },
-         {
+        {
             $group: {
                 _id: "$createdTime",
                 dataCounts: { '$push': '$$ROOT' },

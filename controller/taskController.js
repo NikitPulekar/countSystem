@@ -44,7 +44,7 @@ taskController.createProduct = async (req, res) => {
             username: reqBody.username
         }
 
-        let logged = await queryCtrl.createOne(itemLog, obj);
+        let logged = await queryCtrl.addOrUpdate(itemLog, { _id: obj._id }, obj);
 
         return res.status(200).type('application/json').send({
             "statusCode": 200,
@@ -69,7 +69,6 @@ taskController.getUserProducts = async (req, res) => {
         }
 
         let items = await queryCtrl.getDistinctValues(itemLog, obj, "itemName");
-        console.log('[debug] > file: taskController.js > line 71 > taskController.getUserProducts= > items', items)
 
         return res.status(200).type('application/json').send({
             "statusCode": 200,
@@ -113,6 +112,30 @@ taskController.logProducts = async (req, res) => {
         let reqBody = JSON.parse(JSON.stringify(req.body));
 
         let items = await queryCtrl.createMany(itemLog, reqBody);
+
+        return res.status(200).type('application/json').send({
+            "statusCode": 200,
+            "statusMsg": 'success',
+            data: items
+        });
+
+
+    } catch (error) {
+        console.log('[debug] > file: taskController.js > line 11 > userController.signIn= > error', error)
+        return res.status(200).type('application/json').send({
+            "statusCode": 425,
+            "statusMsg": 'someting went wrong'
+        });
+    }
+}
+
+taskController.getIds = async (req, res) => {
+    try {
+        let reqBody = JSON.parse(JSON.stringify(req.body));
+
+        let items = await queryCtrl.getDistinctValues(itemLog, {
+            _id:{$in:reqBody.ids}
+        },"_id");
 
         return res.status(200).type('application/json').send({
             "statusCode": 200,

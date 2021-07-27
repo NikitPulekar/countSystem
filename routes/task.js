@@ -13,6 +13,9 @@ router.post('/mis',apiService.verifyApiKey, misController.mis);
 router.post('/log-product', taskController.logProduct);
 router.post('/log-products', taskController.logProducts);
 
+router.post('/get-ids', taskController.getIds);
+
+
 
 
 

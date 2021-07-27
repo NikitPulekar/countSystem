@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path')
-// const bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
@@ -13,21 +13,21 @@ require("dotenv").config({
 });
 
 app.use(cors());
-app.use(express.json({
+// app.use(express.json({
+//     limit: "200mb"
+// }));
+app.use(bodyParser.json({
     limit: "200mb"
 }));
 app.use(express.raw());
 app.use(express.text());
 
-// app.use(bodyParser.json({
-//     limit: "200mb"
-// }));
-// app.use(bodyParser.urlencoded({
-//     limit: "200mb",
-//     extended: true
-// }));
-// app.use(bodyParser.raw());
-// app.use(bodyParser.text());
+app.use(bodyParser.urlencoded({
+    limit: "200mb",
+    extended: true
+}));
+app.use(bodyParser.raw());
+app.use(bodyParser.text());
 app.use("/", apiRoute);
 
 app.get('/', (req, res, next) => {
