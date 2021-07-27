@@ -11,9 +11,9 @@ taskController.logTime = async (req, res) => {
     try {
         let reqBody = JSON.parse(JSON.stringify(req.body));
         let obj = {
-            createdAt: new Date().getTime(),
+            createdAt: new Date(reqBody.createdAt),
             itemName: reqBody.product,
-            user: reqBody.username,
+            username: reqBody.username,
             status: reqBody.status
         }
 
