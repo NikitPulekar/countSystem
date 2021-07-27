@@ -2,6 +2,7 @@ const queryCtrl = require('../services/databaseQueries');
 const users = require('../models/userModel');
 const timeLog = require('../models/logModel');
 const itemLog = require('../models/itemModel');
+const utilities = require("../services/utilities");
 
 const misController = {}
 
@@ -115,10 +116,10 @@ misController.mis = async (req, res) => {
         let obj = { username: reqBody.username }
 
         let startDate = ((reqBody.from_date) == null || (reqBody.from_date) == "") ? new Date() : (
-            (utility.isValidDate(reqBody.from_date)) ? new Date(reqBody.from_date) : false);
+            (utilities.isValidDate(reqBody.from_date)) ? new Date(reqBody.from_date) : false);
 
         let endDate = ((reqBody.to_date) == null || (reqBody.to_date) == "") ? new Date() : (
-            (utility.isValidDate(reqBody.to_date)) ? new Date(reqBody.to_date) : false);
+            (utilities.isValidDate(reqBody.to_date)) ? new Date(reqBody.to_date) : false);
         startDate.setHours(0, 0, 0, 0);
 
         endDate.setDate(endDate.getDate() + 1);
@@ -128,12 +129,13 @@ misController.mis = async (req, res) => {
             "$gte": new Date(startDate.toISOString()),
             "$lt": new Date(endDate.toISOString()),
         }
-        
+
         if (reqBody.itemName) obj['itemName'] = reqBody.itemName
 
         let itemsCreated = await queryCtrl.aggregateQuery(itemLog, [{
             $match: obj
-        }, {
+        },
+         {
             $group: {
                 "_id": {
                     "createdTime": { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
@@ -149,7 +151,8 @@ misController.mis = async (req, res) => {
                 createdTime: "$_id.createdTime",
                 count: 1
             }
-        }, {
+        },
+         {
             $group: {
                 _id: "$createdTime",
                 dataCounts: { '$push': '$$ROOT' },
