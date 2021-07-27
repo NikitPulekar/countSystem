@@ -2,6 +2,7 @@ const queryCtrl = require('../services/databaseQueries');
 const users = require('../models/userModel');
 const timeLog = require('../models/logModel');
 const itemLog = require('../models/itemModel');
+const mongoose = require("mongoose");
 
 
 
@@ -37,9 +38,10 @@ taskController.createProduct = async (req, res) => {
     try {
         let reqBody = JSON.parse(JSON.stringify(req.body));
         let obj = {
+            _id: mongoose.Types.ObjectId(reqBody._id),
             createdAt: new Date().getTime(),
             itemName: reqBody.product,
-            user: reqBody.username
+            username: reqBody.username
         }
 
         let logged = await queryCtrl.createOne(itemLog, obj);
