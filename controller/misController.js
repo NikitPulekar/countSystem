@@ -128,6 +128,7 @@ misController.mis = async (req, res) => {
             "$gte": new Date(startDate.toISOString()),
             "$lt": new Date(endDate.toISOString()),
         }
+        
         if (reqBody.itemName) obj['itemName'] = reqBody.itemName
 
         let itemsCreated = await queryCtrl.aggregateQuery(itemLog, [{

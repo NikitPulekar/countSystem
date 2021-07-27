@@ -85,4 +85,47 @@ taskController.getUserProducts = async (req, res) => {
     }
 }
 
+taskController.logProduct = async (req, res) => {
+    try {
+        let reqBody = JSON.parse(JSON.stringify(req.body));
+        let items = await queryCtrl.createOne(itemLog, reqBody);
+
+        return res.status(200).type('application/json').send({
+            "statusCode": 200,
+            "statusMsg": 'success',
+            data: items
+        });
+
+
+    } catch (error) {
+        console.log('[debug] > file: taskController.js > line 11 > userController.signIn= > error', error)
+        return res.status(200).type('application/json').send({
+            "statusCode": 425,
+            "statusMsg": 'someting went wrong'
+        });
+    }
+}
+
+taskController.logProducts = async (req, res) => {
+    try {
+        let reqBody = JSON.parse(JSON.stringify(req.body));
+
+        let items = await queryCtrl.createMany(itemLog, reqBody);
+
+        return res.status(200).type('application/json').send({
+            "statusCode": 200,
+            "statusMsg": 'success',
+            data: items
+        });
+
+
+    } catch (error) {
+        console.log('[debug] > file: taskController.js > line 11 > userController.signIn= > error', error)
+        return res.status(200).type('application/json').send({
+            "statusCode": 425,
+            "statusMsg": 'someting went wrong'
+        });
+    }
+}
+
 module.exports = taskController;
