@@ -24,12 +24,11 @@ userController.signIn = async (req, res) => {
                 msg: 'Unauthorized access!'
             });
         }
-        console.log(reqBody.password);
         let passMatch = await user.comparePassword(reqBody.password); //compare password
 
         if (!passMatch) { //if password does not match
             return res.status(200).type('application/json').send({
-                "statusCode": 401,
+                "statusCode": 200, //401
                 statusMsg: "Failed",
                 msg: 'Unauthorized access!'
             });
