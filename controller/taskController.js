@@ -5,7 +5,8 @@ const timeLog = require('../models/logModel');
 const itemLog = require('../models/itemModel');
 const mongoose = require("mongoose");
 
-let sec = 'sxrcyvbgjmoxcdvgbnjmok3456789';
+//added changes in secretkey
+let secret_key = 'sxrcyvbgjmoxcdvgbnjmok3456789OOOOO';
 
 const taskController = {}
 
