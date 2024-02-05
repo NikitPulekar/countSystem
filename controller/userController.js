@@ -24,7 +24,7 @@ userController.signIn = async (req, res) => {
                 msg: 'Unauthorized access!'
             });
         }
-
+        console.log(reqBody.password);
         let passMatch = await user.comparePassword(reqBody.password); //compare password
 
         if (!passMatch) { //if password does not match
