@@ -5,7 +5,7 @@ const api_key_logs = require('../models/apiKeyLogModel');
 const api_key = require('../models/apiKeyModel');
 
 const userController = {}
-
+// used for signing into user account
 userController.signIn = async (req, res) => {
     try {
         let reqBody = JSON.parse(JSON.stringify(req.body));
@@ -13,9 +13,11 @@ userController.signIn = async (req, res) => {
             username: reqBody.username
         };
 
+        //find if user exists
         let user = await queryCtrl.findOne(users, query)
 
         if (!user) {
+            //error for unauth access
             return res.status(200).type('application/json').send({
                 "statusCode": 401,
                 statusMsg: "Failed",
